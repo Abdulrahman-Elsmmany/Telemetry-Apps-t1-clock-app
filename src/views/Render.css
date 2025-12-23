@@ -1,0 +1,298 @@
+/* Base render container */
+.render {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 3rem;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Greeting */
+.render__greeting {
+  font-size: 2.5rem;
+  font-weight: 300;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Clock container */
+.render__clock-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Location label for digital clocks */
+.render__location {
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ============================================
+   CLOCK BASE STYLES
+   ============================================ */
+
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.clock__time-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+/* ============================================
+   DIGITAL LED CLOCK
+   ============================================ */
+
+.clock--digital-led {
+  font-family: 'Rubik', monospace;
+}
+
+.clock__time--led {
+  font-size: 12rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock__ampm--led {
+  font-size: 3rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 0.15rem solid currentColor;
+  border-radius: 0.5rem;
+  margin-left: 1rem;
+  align-self: flex-start;
+  margin-top: 1rem;
+}
+
+.clock__date--led {
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
+   DIGITAL MINIMAL CLOCK
+   ============================================ */
+
+.clock--digital-minimal {
+  font-family: 'Rubik', sans-serif;
+}
+
+.clock__time--minimal {
+  font-size: 14rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock__ampm--minimal {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-left: 1rem;
+  opacity: 0.6;
+}
+
+.clock__date--minimal {
+  font-size: 2.5rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* ============================================
+   DIGITAL BOLD CLOCK
+   ============================================ */
+
+.clock--digital-bold {
+  font-family: 'Rubik', sans-serif;
+}
+
+.clock--digital-bold .clock__time-row {
+  align-items: center;
+  gap: 0;
+}
+
+.clock__time--bold {
+  font-size: 16rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.clock__colon--bold {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 0.5rem;
+  align-self: center;
+}
+
+.clock__colon-dot {
+  width: 2rem;
+  height: 2rem;
+  background-color: currentColor;
+  border-radius: 0.25rem;
+}
+
+.clock__ampm--bold {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-left: 1.5rem;
+  opacity: 0.6;
+  align-self: flex-start;
+  margin-top: 2rem;
+}
+
+.clock__date--bold {
+  font-size: 2.5rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  margin-top: 1rem;
+}
+
+/* ============================================
+   ANALOG CLOCK BASE
+   ============================================ */
+
+.clock--analog-classic,
+.clock--analog-modern,
+.clock--analog-minimal {
+  width: 100%;
+  max-width: 50rem;
+  aspect-ratio: 1;
+}
+
+.clock__face {
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================
+   ANALOG CLASSIC CLOCK
+   ============================================ */
+
+.clock__face--classic {
+  filter: drop-shadow(0 0.5rem 2rem rgba(0, 0, 0, 0.3));
+}
+
+/* ============================================
+   ANALOG MODERN CLOCK
+   ============================================ */
+
+.clock__face--modern {
+  filter: drop-shadow(0 0.5rem 2rem rgba(0, 0, 0, 0.5));
+}
+
+/* ============================================
+   ANALOG MINIMAL CLOCK
+   ============================================ */
+
+.clock--analog-minimal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.clock__face--minimal {
+  width: 100%;
+  height: auto;
+}
+
+.clock__location--minimal {
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-align: center;
+  opacity: 0.5;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+/* For smaller viewports / higher UI scale, reduce sizes */
+@media (max-aspect-ratio: 1/1) {
+  /* Portrait mode */
+  .clock__time--led {
+    font-size: 8rem;
+  }
+
+  .clock__time--minimal {
+    font-size: 10rem;
+  }
+
+  .clock__time--bold {
+    font-size: 10rem;
+  }
+
+  .clock__colon-dot {
+    width: 1.5rem;
+    height: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .clock--analog-classic,
+  .clock--analog-modern,
+  .clock--analog-minimal {
+    max-width: 40rem;
+  }
+}
+
+/* Extreme aspect ratios */
+@media (min-aspect-ratio: 21/9) {
+  /* Ultra-wide */
+  .clock__time--led {
+    font-size: 10rem;
+  }
+
+  .clock__time--minimal {
+    font-size: 12rem;
+  }
+
+  .clock__time--bold {
+    font-size: 12rem;
+  }
+
+  .clock--analog-classic,
+  .clock--analog-modern,
+  .clock--analog-minimal {
+    max-width: 35rem;
+  }
+}
+
+@media (max-aspect-ratio: 9/21) {
+  /* Ultra-tall */
+  .clock__time--led {
+    font-size: 6rem;
+  }
+
+  .clock__time--minimal {
+    font-size: 8rem;
+  }
+
+  .clock__time--bold {
+    font-size: 8rem;
+  }
+
+  .clock--analog-classic,
+  .clock--analog-modern,
+  .clock--analog-minimal {
+    max-width: 30rem;
+  }
+}
