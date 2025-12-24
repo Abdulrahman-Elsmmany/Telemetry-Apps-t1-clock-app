@@ -20,6 +20,7 @@ import {
   useAccentColorStoreState,
   useShowGreetingStoreState,
   useCustomGreetingStoreState,
+  useTitleLabelStoreState,
   type ClockStyle,
 } from '../hooks/store'
 import './Render.css'
@@ -354,7 +355,7 @@ function DigitalBoldClock({
   )
 }
 
-// Analog Classic Clock Component
+// Analog Classic Clock Component - Swiss Precision Style
 function AnalogClassicClock({
   time,
   timezone,
@@ -389,33 +390,45 @@ function AnalogClassicClock({
   return (
     <div className="clock clock--analog-classic">
       <svg viewBox="0 0 200 200" className="clock__face clock__face--classic">
-        {/* Outer rim */}
-        <circle cx="100" cy="100" r="96" fill="none" stroke="#c0c0c0" strokeWidth="4" />
+        {/* Outer rim - Swiss style silver */}
+        <circle cx="100" cy="100" r="97" fill="none" stroke="#b8b8b8" strokeWidth="5" />
         {/* Face */}
         <circle cx="100" cy="100" r="92" fill="#ffffff" />
 
         {/* Hour markers and numerals */}
         {numerals.map((num, i) => {
           const angle = (i * 30 - 90) * (Math.PI / 180)
-          const x1 = 100 + 78 * Math.cos(angle)
-          const y1 = 100 + 78 * Math.sin(angle)
+          const isQuarter = [12, 3, 6, 9].includes(num)
+          const x1 = 100 + 75 * Math.cos(angle)
+          const y1 = 100 + 75 * Math.sin(angle)
           const x2 = 100 + 85 * Math.cos(angle)
           const y2 = 100 + 85 * Math.sin(angle)
-          const textX = 100 + 65 * Math.cos(angle)
-          const textY = 100 + 65 * Math.sin(angle)
+          const textX = 100 + 62 * Math.cos(angle)
+          const textY = 100 + 62 * Math.sin(angle)
 
           return (
             <g key={num}>
-              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#333" strokeWidth="2" />
-              {[12, 3, 6, 9].includes(num) && (
+              {/* Thicker markers at quarters, thinner at other hours */}
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="#222"
+                strokeWidth={isQuarter ? '4' : '2'}
+                strokeLinecap="round"
+              />
+              {/* Bold numerals at 12, 3, 6, 9 for 10ft readability */}
+              {isQuarter && (
                 <text
                   x={textX}
                   y={textY}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize="14"
+                  fontSize="22"
+                  fontWeight="700"
                   fontFamily="Rubik, sans-serif"
-                  fill="#333"
+                  fill="#222"
                 >
                   {num}
                 </text>
@@ -424,26 +437,41 @@ function AnalogClassicClock({
           )
         })}
 
-        {/* Hour hand */}
+        {/* Location label - rendered before hands so hands pass over it */}
+        {locationLabel && (
+          <text
+            x="100"
+            y="140"
+            textAnchor="middle"
+            fontSize="12"
+            fontWeight="500"
+            fontFamily="Rubik, sans-serif"
+            fill="#555"
+          >
+            {locationLabel}
+          </text>
+        )}
+
+        {/* Hour hand - Swiss Precision: thick rectangle with rounded end */}
         <line
           x1="100"
           y1="100"
           x2="100"
-          y2="50"
+          y2="48"
           stroke="#1a1a1a"
-          strokeWidth="4"
+          strokeWidth="6"
           strokeLinecap="round"
           transform={`rotate(${hourDeg} 100 100)`}
         />
 
-        {/* Minute hand */}
+        {/* Minute hand - thinner but same style */}
         <line
           x1="100"
           y1="100"
           x2="100"
-          y2="30"
+          y2="28"
           stroke="#1a1a1a"
-          strokeWidth="3"
+          strokeWidth="4"
           strokeLinecap="round"
           transform={`rotate(${minuteDeg} 100 100)`}
         />
@@ -452,38 +480,25 @@ function AnalogClassicClock({
         {showSeconds && (
           <line
             x1="100"
-            y1="115"
+            y1="118"
             x2="100"
-            y2="25"
+            y2="22"
             stroke={accentColor}
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeLinecap="round"
             transform={`rotate(${secondDeg} 100 100)`}
           />
         )}
 
-        {/* Center dot */}
-        <circle cx="100" cy="100" r="4" fill="#1a1a1a" />
-
-        {/* Location label */}
-        {locationLabel && (
-          <text
-            x="100"
-            y="145"
-            textAnchor="middle"
-            fontSize="8"
-            fontFamily="Rubik, sans-serif"
-            fill="#666"
-          >
-            {locationLabel}
-          </text>
-        )}
+        {/* Center cap - larger with shadow effect */}
+        <circle cx="100" cy="100" r="7" fill="#1a1a1a" />
+        <circle cx="100" cy="100" r="4" fill="#333" />
       </svg>
     </div>
   )
 }
 
-// Analog Modern Clock Component
+// Analog Modern Clock Component - Swiss Precision Style (Dark)
 function AnalogModernClock({
   time,
   timezone,
@@ -516,18 +531,19 @@ function AnalogModernClock({
   return (
     <div className="clock clock--analog-modern">
       <svg viewBox="0 0 200 200" className="clock__face clock__face--modern">
-        {/* Outer rim */}
-        <circle cx="100" cy="100" r="96" fill="none" stroke="#334155" strokeWidth="6" />
+        {/* Outer rim - Swiss style */}
+        <circle cx="100" cy="100" r="97" fill="none" stroke="#404040" strokeWidth="5" />
         {/* Face */}
-        <circle cx="100" cy="100" r="90" fill="#1a1a1a" />
+        <circle cx="100" cy="100" r="92" fill="#1a1a1a" />
 
-        {/* Hour markers (bars) */}
+        {/* Hour markers (bars) - thicker at quarters */}
         {Array.from({ length: 12 }).map((_, i) => {
           const angle = (i * 30 - 90) * (Math.PI / 180)
-          const x1 = 100 + 70 * Math.cos(angle)
-          const y1 = 100 + 70 * Math.sin(angle)
-          const x2 = 100 + 82 * Math.cos(angle)
-          const y2 = 100 + 82 * Math.sin(angle)
+          const isQuarter = i % 3 === 0
+          const x1 = 100 + 72 * Math.cos(angle)
+          const y1 = 100 + 72 * Math.sin(angle)
+          const x2 = 100 + 84 * Math.cos(angle)
+          const y2 = 100 + 84 * Math.sin(angle)
 
           return (
             <line
@@ -537,32 +553,47 @@ function AnalogModernClock({
               x2={x2}
               y2={y2}
               stroke={primaryColor}
-              strokeWidth={i % 3 === 0 ? '4' : '2'}
+              strokeWidth={isQuarter ? '5' : '2'}
               strokeLinecap="round"
             />
           )
         })}
 
-        {/* Hour hand */}
+        {/* Location label - rendered before hands so hands pass over it */}
+        {locationLabel && (
+          <text
+            x="100"
+            y="140"
+            textAnchor="middle"
+            fontSize="12"
+            fontWeight="500"
+            fontFamily="Rubik, sans-serif"
+            fill={secondaryColor}
+          >
+            {locationLabel}
+          </text>
+        )}
+
+        {/* Hour hand - Swiss Precision: thick */}
         <line
           x1="100"
           y1="100"
           x2="100"
-          y2="55"
+          y2="50"
           stroke={primaryColor}
-          strokeWidth="5"
+          strokeWidth="6"
           strokeLinecap="round"
           transform={`rotate(${hourDeg} 100 100)`}
         />
 
-        {/* Minute hand */}
+        {/* Minute hand - thinner but same style */}
         <line
           x1="100"
           y1="100"
           x2="100"
-          y2="35"
+          y2="30"
           stroke={primaryColor}
-          strokeWidth="3"
+          strokeWidth="4"
           strokeLinecap="round"
           transform={`rotate(${minuteDeg} 100 100)`}
         />
@@ -572,39 +603,26 @@ function AnalogModernClock({
           <g transform={`rotate(${secondDeg} 100 100)`}>
             <line
               x1="100"
-              y1="120"
+              y1="118"
               x2="100"
-              y2="30"
+              y2="25"
               stroke={accentColor}
               strokeWidth="2"
               strokeLinecap="round"
             />
-            <circle cx="100" cy="120" r="4" fill={accentColor} />
+            <circle cx="100" cy="118" r="5" fill={accentColor} />
           </g>
         )}
 
-        {/* Center dot */}
-        <circle cx="100" cy="100" r="5" fill={primaryColor} />
-
-        {/* Location label */}
-        {locationLabel && (
-          <text
-            x="100"
-            y="140"
-            textAnchor="middle"
-            fontSize="9"
-            fontFamily="Rubik, sans-serif"
-            fill={secondaryColor}
-          >
-            {locationLabel}
-          </text>
-        )}
+        {/* Center cap - larger with layered effect */}
+        <circle cx="100" cy="100" r="7" fill={primaryColor} />
+        <circle cx="100" cy="100" r="4" fill="#333" />
       </svg>
     </div>
   )
 }
 
-// Analog Minimal Clock Component
+// Analog Minimal Clock Component - Swiss Precision Style (Ultra-clean)
 function AnalogMinimalClock({
   time,
   timezone,
@@ -637,17 +655,32 @@ function AnalogMinimalClock({
   return (
     <div className="clock clock--analog-minimal">
       <svg viewBox="0 0 200 200" className="clock__face clock__face--minimal">
-        {/* Thin circle outline */}
-        <circle cx="100" cy="100" r="90" fill="none" stroke={primaryColor} strokeWidth="1" />
+        {/* Thin circle outline - slightly thicker for visibility */}
+        <circle cx="100" cy="100" r="92" fill="none" stroke={primaryColor} strokeWidth="2" />
 
-        {/* Hour hand */}
+        {/* Location label - rendered early so hands pass over it */}
+        {locationLabel && (
+          <text
+            x="100"
+            y="145"
+            textAnchor="middle"
+            fontSize="12"
+            fontWeight="500"
+            fontFamily="Rubik, sans-serif"
+            fill={secondaryColor}
+          >
+            {locationLabel}
+          </text>
+        )}
+
+        {/* Hour hand - thicker for readability */}
         <line
           x1="100"
           y1="100"
           x2="100"
           y2="50"
           stroke={primaryColor}
-          strokeWidth="2"
+          strokeWidth="4"
           strokeLinecap="round"
           transform={`rotate(${hourDeg} 100 100)`}
         />
@@ -659,7 +692,7 @@ function AnalogMinimalClock({
           x2="100"
           y2="30"
           stroke={primaryColor}
-          strokeWidth="1.5"
+          strokeWidth="3"
           strokeLinecap="round"
           transform={`rotate(${minuteDeg} 100 100)`}
         />
@@ -668,29 +701,22 @@ function AnalogMinimalClock({
         {showSeconds && (
           <line
             x1="100"
-            y1="110"
+            y1="115"
             x2="100"
-            y2="25"
+            y2="22"
             stroke={accentColor}
-            strokeWidth="0.75"
+            strokeWidth="1.5"
             strokeLinecap="round"
             transform={`rotate(${secondDeg} 100 100)`}
           />
         )}
 
-        {/* Center dot */}
-        <circle cx="100" cy="100" r="3" fill={accentColor} />
+        {/* Center dot - larger */}
+        <circle cx="100" cy="100" r="5" fill={accentColor} />
 
-        {/* Small dot at 6 o'clock */}
-        <circle cx="100" cy="150" r="2" fill={accentColor} />
+        {/* Small dot at 12 o'clock for orientation */}
+        <circle cx="100" cy="18" r="3" fill={primaryColor} />
       </svg>
-
-      {/* Location label below clock */}
-      {locationLabel && (
-        <div className="clock__location clock__location--minimal" style={{ color: secondaryColor }}>
-          {locationLabel}
-        </div>
-      )}
     </div>
   )
 }
@@ -718,6 +744,7 @@ export function Render() {
   const [isLoadingAccent, accentColor] = useAccentColorStoreState()
   const [isLoadingGreeting, showGreeting] = useShowGreetingStoreState()
   const [isLoadingCustomGreeting, customGreeting] = useCustomGreetingStoreState()
+  const [isLoadingTitleLabel, titleLabel] = useTitleLabelStoreState()
 
   // Check if any essential settings are still loading
   const isLoading = isLoadingStyle || isLoadingBg || isLoadingBgOpacity || isLoadingPrimary
@@ -861,6 +888,12 @@ export function Render() {
 
   return (
     <div className="render" style={bgStyle}>
+      {titleLabel && (
+        <div className="render__title-label" style={{ color: secondaryColor }}>
+          {titleLabel}
+        </div>
+      )}
+
       {showGreeting && (
         <div className="render__greeting" style={{ color: secondaryColor }}>
           {greeting}

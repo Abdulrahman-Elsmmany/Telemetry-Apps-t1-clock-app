@@ -38,7 +38,7 @@ export const useShowTimezoneAbbrStoreState = createUseInstanceStoreState<boolean
 
 // Color Settings
 export const usePrimaryColorStoreState = createUseInstanceStoreState<string>('primary-color', '#ffffff')
-export const useSecondaryColorStoreState = createUseInstanceStoreState<string>('secondary-color', '#9ca3af')
+export const useSecondaryColorStoreState = createUseInstanceStoreState<string>('secondary-color', '#d1d5db')
 export const useBackgroundColorStoreState = createUseInstanceStoreState<string>('background-color', '#1a1a1a')
 export const useBackgroundOpacityStoreState = createUseInstanceStoreState<number>('background-opacity', 100)
 
@@ -48,3 +48,6 @@ export const useAccentColorStoreState = createUseInstanceStoreState<string>('acc
 // Greeting Settings
 export const useShowGreetingStoreState = createUseInstanceStoreState<boolean>('show-greeting', false)
 export const useCustomGreetingStoreState = createUseInstanceStoreState<string>('custom-greeting', '')
+
+// Title Label (displays above clock, e.g., "Vancouver", "Meeting Room A")
+export const useTitleLabelStoreState = createUseInstanceStoreState<string>('title-label', '')

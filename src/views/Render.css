@@ -11,9 +11,18 @@
   min-height: 0;
 }
 
+/* Title Label (e.g., "Vancouver", "Meeting Room A") */
+.render__title-label {
+  font-size: max(2.5rem, 3rem);
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 /* Greeting */
 .render__greeting {
-  font-size: 2.5rem;
+  font-size: max(2rem, 2.5rem);
   font-weight: 300;
   text-align: center;
   opacity: 0.8;
@@ -31,7 +40,7 @@
 
 /* Location label for digital clocks */
 .render__location {
-  font-size: 2rem;
+  font-size: max(2rem, 2rem);
   font-weight: 400;
   text-align: center;
   opacity: 0.7;
@@ -53,6 +62,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
+  position: relative;
 }
 
 /* ============================================
@@ -71,18 +81,19 @@
 }
 
 .clock__ampm--led {
-  font-size: 3rem;
+  font-size: max(2rem, 3rem);
   font-weight: 500;
   padding: 0.5rem 1rem;
   border: 0.15rem solid currentColor;
   border-radius: 0.5rem;
+  position: absolute;
+  left: 100%;
+  top: 0.5rem;
   margin-left: 1rem;
-  align-self: flex-start;
-  margin-top: 1rem;
 }
 
 .clock__date--led {
-  font-size: 3rem;
+  font-size: max(2rem, 3rem);
   font-weight: 400;
   letter-spacing: 0.02em;
 }
@@ -103,14 +114,18 @@
 }
 
 .clock__ampm--minimal {
-  font-size: 2.5rem;
+  font-size: max(2rem, 2.5rem);
   font-weight: 400;
-  margin-left: 1rem;
   opacity: 0.6;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 1rem;
 }
 
 .clock__date--minimal {
-  font-size: 2.5rem;
+  font-size: max(2rem, 2.5rem);
   font-weight: 400;
   opacity: 0.7;
 }
@@ -151,16 +166,17 @@
 }
 
 .clock__ampm--bold {
-  font-size: 3rem;
+  font-size: max(2rem, 3rem);
   font-weight: 600;
-  margin-left: 1.5rem;
   opacity: 0.6;
-  align-self: flex-start;
-  margin-top: 2rem;
+  position: absolute;
+  left: 100%;
+  top: 0.5rem;
+  margin-left: 1.5rem;
 }
 
 .clock__date--bold {
-  font-size: 2.5rem;
+  font-size: max(2rem, 2.5rem);
   font-weight: 500;
   letter-spacing: 0.15em;
   margin-top: 1rem;
@@ -216,7 +232,7 @@
 }
 
 .clock__location--minimal {
-  font-size: 1.5rem;
+  font-size: max(2rem, 2rem);
   font-weight: 400;
   text-align: center;
   opacity: 0.5;

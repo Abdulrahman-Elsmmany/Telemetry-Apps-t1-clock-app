@@ -34,6 +34,7 @@ import {
   useAccentColorStoreState,
   useShowGreetingStoreState,
   useCustomGreetingStoreState,
+  useTitleLabelStoreState,
   type ClockStyle,
   type TimeFormat,
   type DateFormat,
@@ -119,6 +120,9 @@ export function Settings() {
   const [isLoadingGreeting, showGreeting, setShowGreeting] = useShowGreetingStoreState()
   const [isLoadingCustomGreeting, customGreeting, setCustomGreeting] = useCustomGreetingStoreState(250)
 
+  // Title Label
+  const [isLoadingTitleLabel, titleLabel, setTitleLabel] = useTitleLabelStoreState(250)
+
   const isDigital = clockStyle.startsWith('digital')
 
   return (
@@ -142,6 +146,26 @@ export function Settings() {
           </select>
         </SettingsSelectFrame>
         <SettingsHint>Choose between digital and analog clock styles</SettingsHint>
+      </SettingsField>
+
+      <SettingsDivider />
+
+      {/* Title Label */}
+      <SettingsHeading>Title Label</SettingsHeading>
+
+      <SettingsField>
+        <SettingsLabel>Display Label</SettingsLabel>
+        <SettingsInputFrame>
+          <input
+            type="text"
+            placeholder="e.g., Vancouver, Meeting Room A..."
+            disabled={isLoadingTitleLabel}
+            value={titleLabel}
+            onChange={(e) => setTitleLabel(e.target.value)}
+            maxLength={50}
+          />
+        </SettingsInputFrame>
+        <SettingsHint>Optional label displayed above the clock (useful for side-by-side displays)</SettingsHint>
       </SettingsField>
 
       <SettingsDivider />
