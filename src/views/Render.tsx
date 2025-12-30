@@ -39,104 +39,120 @@ function useCurrentTime(timezone: string) {
   return time
 }
 
-// Format time based on settings
+// Format time based on settings (with error handling)
 function formatTime(
   date: Date,
   timezone: string,
   format: '12' | '24',
   showSeconds: boolean
-) {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: format === '12',
-  }
-  if (showSeconds) {
-    options.second = '2-digit'
-  }
+): string | null {
+  try {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: format === '12',
+    }
+    if (showSeconds) {
+      options.second = '2-digit'
+    }
 
-  const formatted = new Intl.DateTimeFormat('en-US', options).format(date)
-  // Remove AM/PM for separate handling
-  return formatted.replace(/\s?(AM|PM)$/i, '')
+    const formatted = new Intl.DateTimeFormat('en-US', options).format(date)
+    // Remove AM/PM for separate handling
+    return formatted.replace(/\s?(AM|PM)$/i, '')
+  } catch {
+    return null
+  }
 }
 
-// Get AM/PM
+// Get AM/PM (with error handling)
 function getAmPm(date: Date, timezone: string): string {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-    hour: 'numeric',
-    hour12: true,
+  try {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: timezone,
+      hour: 'numeric',
+      hour12: true,
+    }
+    const formatted = new Intl.DateTimeFormat('en-US', options).format(date)
+    return formatted.includes('AM') ? 'AM' : 'PM'
+  } catch {
+    return ''
   }
-  const formatted = new Intl.DateTimeFormat('en-US', options).format(date)
-  return formatted.includes('AM') ? 'AM' : 'PM'
 }
 
-// Format date based on settings
+// Format date based on settings (with error handling)
 function formatDate(
   date: Date,
   timezone: string,
   dateFormat: string,
   dayOfWeek: string,
   monthFormat: string
-): string {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-  }
-
-  // Day of week
-  let dayStr = ''
-  if (dayOfWeek !== 'off') {
-    const dayOptions: Intl.DateTimeFormatOptions = {
+): string | null {
+  try {
+    const options: Intl.DateTimeFormatOptions = {
       timeZone: timezone,
-      weekday: dayOfWeek === 'short' ? 'short' : 'long',
     }
-    dayStr = new Intl.DateTimeFormat('en-US', dayOptions).format(date)
-  }
 
-  // Date formatting
-  let dateStr = ''
-  if (dateFormat === 'written') {
-    const monthOpt = monthFormat === 'full' ? 'long' : monthFormat === 'short' ? 'short' : 'numeric'
-    options.month = monthOpt as 'long' | 'short' | 'numeric'
-    options.day = 'numeric'
-    options.year = 'numeric'
-    dateStr = new Intl.DateTimeFormat('en-US', options).format(date)
-  } else {
-    const day = date.toLocaleDateString('en-US', { timeZone: timezone, day: '2-digit' })
-    const month = date.toLocaleDateString('en-US', { timeZone: timezone, month: '2-digit' })
-    const year = date.toLocaleDateString('en-US', { timeZone: timezone, year: 'numeric' })
-
-    switch (dateFormat) {
-      case 'MM/DD/YYYY':
-        dateStr = `${month}/${day}/${year}`
-        break
-      case 'DD/MM/YYYY':
-        dateStr = `${day}/${month}/${year}`
-        break
-      case 'YYYY-MM-DD':
-        dateStr = `${year}-${month}-${day}`
-        break
-      default:
-        dateStr = `${month}/${day}/${year}`
+    // Day of week
+    let dayStr = ''
+    if (dayOfWeek !== 'off') {
+      const dayOptions: Intl.DateTimeFormatOptions = {
+        timeZone: timezone,
+        weekday: dayOfWeek === 'short' ? 'short' : 'long',
+      }
+      dayStr = new Intl.DateTimeFormat('en-US', dayOptions).format(date)
     }
-  }
 
-  if (dayStr) {
-    return `${dayStr}, ${dateStr}`
+    // Date formatting
+    let dateStr = ''
+    if (dateFormat === 'written') {
+      const monthOpt = monthFormat === 'full' ? 'long' : monthFormat === 'short' ? 'short' : 'numeric'
+      options.month = monthOpt as 'long' | 'short' | 'numeric'
+      options.day = 'numeric'
+      options.year = 'numeric'
+      dateStr = new Intl.DateTimeFormat('en-US', options).format(date)
+    } else {
+      const day = date.toLocaleDateString('en-US', { timeZone: timezone, day: '2-digit' })
+      const month = date.toLocaleDateString('en-US', { timeZone: timezone, month: '2-digit' })
+      const year = date.toLocaleDateString('en-US', { timeZone: timezone, year: 'numeric' })
+
+      switch (dateFormat) {
+        case 'MM/DD/YYYY':
+          dateStr = `${month}/${day}/${year}`
+          break
+        case 'DD/MM/YYYY':
+          dateStr = `${day}/${month}/${year}`
+          break
+        case 'YYYY-MM-DD':
+          dateStr = `${year}-${month}-${day}`
+          break
+        default:
+          dateStr = `${month}/${day}/${year}`
+      }
+    }
+
+    if (dayStr) {
+      return `${dayStr}, ${dateStr}`
+    }
+    return dateStr
+  } catch {
+    return null
   }
-  return dateStr
 }
 
-// Get timezone abbreviation
+// Get timezone abbreviation (with error handling)
 function getTimezoneAbbr(date: Date, timezone: string): string {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-    timeZoneName: 'short',
+  try {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: timezone,
+      timeZoneName: 'short',
+    }
+    const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date)
+    const tzPart = parts.find((p) => p.type === 'timeZoneName')
+    return tzPart?.value || ''
+  } catch {
+    return ''
   }
-  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date)
-  const tzPart = parts.find((p) => p.type === 'timeZoneName')
-  return tzPart?.value || ''
 }
 
 // Get city name from timezone
@@ -164,24 +180,42 @@ function getGreeting(date: Date, timezone: string, customGreeting: string): stri
   return 'Good Night'
 }
 
-// Get time parts for analog clock
-function getTimeParts(date: Date, timezone: string) {
-  const timeStr = date.toLocaleTimeString('en-US', {
-    timeZone: timezone,
-    hour12: false,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
-  const [hours, minutes, seconds] = timeStr.split(':').map(Number)
-  const ms = date.getMilliseconds()
+// Get time parts for analog clock (with error handling)
+function getTimeParts(date: Date, timezone: string): { hours: number; minutes: number; seconds: number; milliseconds: number } | null {
+  try {
+    const timeStr = date.toLocaleTimeString('en-US', {
+      timeZone: timezone,
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    })
+    const [hours, minutes, seconds] = timeStr.split(':').map(Number)
+    const ms = date.getMilliseconds()
 
-  return {
-    hours: hours % 12,
-    minutes,
-    seconds,
-    milliseconds: ms,
+    return {
+      hours: hours % 12,
+      minutes,
+      seconds,
+      milliseconds: ms,
+    }
+  } catch {
+    return null
   }
+}
+
+// Error Display Component
+function ErrorDisplay({ primaryColor }: { primaryColor: string }) {
+  return (
+    <div className="clock clock--error">
+      <div className="clock__error-message" style={{ color: primaryColor }}>
+        Time Unavailable
+      </div>
+      <div className="clock__error-hint" style={{ color: primaryColor, opacity: 0.6 }}>
+        Please check timezone settings
+      </div>
+    </div>
+  )
 }
 
 // Digital LED Clock Component
@@ -212,7 +246,12 @@ function DigitalLedClock({
 }) {
   const timeStr = formatTime(time, timezone, timeFormat, showSeconds)
   const ampm = timeFormat === '12' ? getAmPm(time, timezone) : ''
-  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : ''
+  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : null
+
+  // Show error state if time formatting fails
+  if (timeStr === null) {
+    return <ErrorDisplay primaryColor={primaryColor} />
+  }
 
   return (
     <div className="clock clock--digital-led">
@@ -226,7 +265,7 @@ function DigitalLedClock({
           </span>
         )}
       </div>
-      {showDate && (
+      {showDate && dateStr && (
         <div className="clock__date clock__date--led" style={{ color: primaryColor }}>
           {dateStr}
         </div>
@@ -263,7 +302,12 @@ function DigitalMinimalClock({
 }) {
   const timeStr = formatTime(time, timezone, timeFormat, showSeconds)
   const ampm = timeFormat === '12' ? getAmPm(time, timezone) : ''
-  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : ''
+  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : null
+
+  // Show error state if time formatting fails
+  if (timeStr === null) {
+    return <ErrorDisplay primaryColor={primaryColor} />
+  }
 
   return (
     <div className="clock clock--digital-minimal">
@@ -277,7 +321,7 @@ function DigitalMinimalClock({
           </span>
         )}
       </div>
-      {showDate && (
+      {showDate && dateStr && (
         <div className="clock__date clock__date--minimal" style={{ color: secondaryColor }}>
           {dateStr}
         </div>
@@ -314,18 +358,25 @@ function DigitalBoldClock({
   secondaryColor: string
   accentColor: string
 }) {
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: timezone,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: timeFormat === '12',
+  // Parse time with error handling
+  let hour = '00'
+  let minute = '00'
+  try {
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: timezone,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: timeFormat === '12',
+    }
+    const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(time)
+    hour = parts.find((p) => p.type === 'hour')?.value || '00'
+    minute = parts.find((p) => p.type === 'minute')?.value || '00'
+  } catch {
+    return <ErrorDisplay primaryColor={primaryColor} />
   }
-  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(time)
 
-  const hour = parts.find((p) => p.type === 'hour')?.value || '00'
-  const minute = parts.find((p) => p.type === 'minute')?.value || '00'
   const ampm = timeFormat === '12' ? getAmPm(time, timezone) : ''
-  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : ''
+  const dateStr = showDate ? formatDate(time, timezone, dateFormat, dayOfWeek, monthFormat) : null
 
   return (
     <div className="clock clock--digital-bold">
@@ -346,7 +397,7 @@ function DigitalBoldClock({
           </span>
         )}
       </div>
-      {showDate && (
+      {showDate && dateStr && (
         <div className="clock__date clock__date--bold" style={{ color: secondaryColor }}>
           {dateStr.toUpperCase()}
         </div>
@@ -361,29 +412,25 @@ function AnalogClassicClock({
   timezone,
   showSeconds,
   primaryColor,
-  secondaryColor,
   accentColor,
-  showCityName,
-  showTimezoneAbbr,
 }: {
   time: Date
   timezone: string
   showSeconds: boolean
   primaryColor: string
-  secondaryColor: string
   accentColor: string
-  showCityName: boolean
-  showTimezoneAbbr: boolean
 }) {
-  const { hours, minutes, seconds, milliseconds } = getTimeParts(time, timezone)
+  const timeParts = getTimeParts(time, timezone)
 
+  // Show error state if time calculation fails
+  if (!timeParts) {
+    return <ErrorDisplay primaryColor={primaryColor} />
+  }
+
+  const { hours, minutes, seconds, milliseconds } = timeParts
   const hourDeg = (hours * 30) + (minutes * 0.5)
   const minuteDeg = (minutes * 6) + (seconds * 0.1)
   const secondDeg = (seconds * 6) + (milliseconds * 0.006)
-
-  const cityName = showCityName ? getCityName(timezone) : ''
-  const tzAbbr = showTimezoneAbbr ? getTimezoneAbbr(time, timezone) : ''
-  const locationLabel = [cityName, tzAbbr].filter(Boolean).join(' · ')
 
   const numerals = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
@@ -437,21 +484,6 @@ function AnalogClassicClock({
           )
         })}
 
-        {/* Location label - rendered before hands so hands pass over it */}
-        {locationLabel && (
-          <text
-            x="100"
-            y="140"
-            textAnchor="middle"
-            fontSize="12"
-            fontWeight="500"
-            fontFamily="Rubik, sans-serif"
-            fill="#555"
-          >
-            {locationLabel}
-          </text>
-        )}
-
         {/* Hour hand - Swiss Precision: thick rectangle with rounded end */}
         <line
           x1="100"
@@ -504,29 +536,25 @@ function AnalogModernClock({
   timezone,
   showSeconds,
   primaryColor,
-  secondaryColor,
   accentColor,
-  showCityName,
-  showTimezoneAbbr,
 }: {
   time: Date
   timezone: string
   showSeconds: boolean
   primaryColor: string
-  secondaryColor: string
   accentColor: string
-  showCityName: boolean
-  showTimezoneAbbr: boolean
 }) {
-  const { hours, minutes, seconds, milliseconds } = getTimeParts(time, timezone)
+  const timeParts = getTimeParts(time, timezone)
 
+  // Show error state if time calculation fails
+  if (!timeParts) {
+    return <ErrorDisplay primaryColor={primaryColor} />
+  }
+
+  const { hours, minutes, seconds, milliseconds } = timeParts
   const hourDeg = (hours * 30) + (minutes * 0.5)
   const minuteDeg = (minutes * 6) + (seconds * 0.1)
   const secondDeg = (seconds * 6) + (milliseconds * 0.006)
-
-  const cityName = showCityName ? getCityName(timezone) : ''
-  const tzAbbr = showTimezoneAbbr ? getTimezoneAbbr(time, timezone) : ''
-  const locationLabel = [cityName, tzAbbr].filter(Boolean).join(' · ')
 
   return (
     <div className="clock clock--analog-modern">
@@ -558,21 +586,6 @@ function AnalogModernClock({
             />
           )
         })}
-
-        {/* Location label - rendered before hands so hands pass over it */}
-        {locationLabel && (
-          <text
-            x="100"
-            y="140"
-            textAnchor="middle"
-            fontSize="12"
-            fontWeight="500"
-            fontFamily="Rubik, sans-serif"
-            fill={secondaryColor}
-          >
-            {locationLabel}
-          </text>
-        )}
 
         {/* Hour hand - Swiss Precision: thick */}
         <line
@@ -628,50 +641,31 @@ function AnalogMinimalClock({
   timezone,
   showSeconds,
   primaryColor,
-  secondaryColor,
   accentColor,
-  showCityName,
-  showTimezoneAbbr,
 }: {
   time: Date
   timezone: string
   showSeconds: boolean
   primaryColor: string
-  secondaryColor: string
   accentColor: string
-  showCityName: boolean
-  showTimezoneAbbr: boolean
 }) {
-  const { hours, minutes, seconds, milliseconds } = getTimeParts(time, timezone)
+  const timeParts = getTimeParts(time, timezone)
 
+  // Show error state if time calculation fails
+  if (!timeParts) {
+    return <ErrorDisplay primaryColor={primaryColor} />
+  }
+
+  const { hours, minutes, seconds, milliseconds } = timeParts
   const hourDeg = (hours * 30) + (minutes * 0.5)
   const minuteDeg = (minutes * 6) + (seconds * 0.1)
   const secondDeg = (seconds * 6) + (milliseconds * 0.006)
-
-  const cityName = showCityName ? getCityName(timezone) : ''
-  const tzAbbr = showTimezoneAbbr ? getTimezoneAbbr(time, timezone) : ''
-  const locationLabel = [cityName, tzAbbr].filter(Boolean).join(' · ')
 
   return (
     <div className="clock clock--analog-minimal">
       <svg viewBox="0 0 200 200" className="clock__face clock__face--minimal">
         {/* Thin circle outline - slightly thicker for visibility */}
         <circle cx="100" cy="100" r="92" fill="none" stroke={primaryColor} strokeWidth="2" />
-
-        {/* Location label - rendered early so hands pass over it */}
-        {locationLabel && (
-          <text
-            x="100"
-            y="145"
-            textAnchor="middle"
-            fontSize="12"
-            fontWeight="500"
-            fontFamily="Rubik, sans-serif"
-            fill={secondaryColor}
-          >
-            {locationLabel}
-          </text>
-        )}
 
         {/* Hour hand - thicker for readability */}
         <line
@@ -746,36 +740,38 @@ export function Render() {
   const [isLoadingCustomGreeting, customGreeting] = useCustomGreetingStoreState()
   const [isLoadingTitleLabel, titleLabel] = useTitleLabelStoreState()
 
-  // Check if any essential settings are still loading
-  const isLoading = isLoadingStyle || isLoadingBg || isLoadingBgOpacity || isLoadingPrimary
-
   const time = useCurrentTime(timezone)
-  const greeting = showGreeting ? getGreeting(time, timezone, customGreeting) : ''
 
+  // Get greeting with error handling
+  let greeting = ''
+  try {
+    greeting = showGreeting ? getGreeting(time, timezone, customGreeting) : ''
+  } catch {
+    // Silently fail for greeting - not critical
+  }
+
+  // Background style with error handling
   const bgStyle = useMemo(() => {
-    const opacity = backgroundOpacity / 100
-    // Convert hex to rgba
-    const hex = backgroundColor.replace('#', '')
-    const r = parseInt(hex.substring(0, 2), 16)
-    const g = parseInt(hex.substring(2, 4), 16)
-    const b = parseInt(hex.substring(4, 6), 16)
-    return {
-      backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+    try {
+      const opacity = backgroundOpacity / 100
+      // Convert hex to rgba
+      const hex = backgroundColor.replace('#', '')
+      const r = parseInt(hex.substring(0, 2), 16)
+      const g = parseInt(hex.substring(2, 4), 16)
+      const b = parseInt(hex.substring(4, 6), 16)
+      return {
+        backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+      }
+    } catch {
+      // Fallback to solid dark background
+      return { backgroundColor: '#1a1a1a' }
     }
   }, [backgroundColor, backgroundOpacity])
 
-  if (isLoading) {
-    return (
-      <div className="render" style={{ backgroundColor: '#1a1a1a' }}>
-        <div style={{ color: '#ffffff', fontSize: '3rem' }}>Loading...</div>
-      </div>
-    )
-  }
-
   const isDigital = clockStyle.startsWith('digital')
-  const cityName = showCityName ? getCityName(timezone) : ''
-  const tzAbbr = showTimezoneAbbr ? getTimezoneAbbr(time, timezone) : ''
-  const locationLabel = [cityName, tzAbbr].filter(Boolean).join(' · ')
+
+  // Unified title: Display Label takes priority, otherwise city name if enabled
+  const displayTitle = titleLabel || (showCityName ? getCityName(timezone) : '')
 
   const renderClock = () => {
     switch (clockStyle) {
@@ -835,10 +831,7 @@ export function Render() {
             timezone={timezone}
             showSeconds={showSeconds}
             primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
             accentColor={accentColor}
-            showCityName={showCityName}
-            showTimezoneAbbr={showTimezoneAbbr}
           />
         )
       case 'analog-modern':
@@ -848,10 +841,7 @@ export function Render() {
             timezone={timezone}
             showSeconds={showSeconds}
             primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
             accentColor={accentColor}
-            showCityName={showCityName}
-            showTimezoneAbbr={showTimezoneAbbr}
           />
         )
       case 'analog-minimal':
@@ -861,10 +851,7 @@ export function Render() {
             timezone={timezone}
             showSeconds={showSeconds}
             primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
             accentColor={accentColor}
-            showCityName={showCityName}
-            showTimezoneAbbr={showTimezoneAbbr}
           />
         )
       default:
@@ -888,9 +875,9 @@ export function Render() {
 
   return (
     <div className="render" style={bgStyle}>
-      {titleLabel && (
+      {displayTitle && (
         <div className="render__title-label" style={{ color: secondaryColor }}>
-          {titleLabel}
+          {displayTitle}
         </div>
       )}
 
@@ -901,12 +888,6 @@ export function Render() {
       )}
 
       <div className="render__clock-container">{renderClock()}</div>
-
-      {isDigital && locationLabel && (
-        <div className="render__location" style={{ color: secondaryColor }}>
-          {locationLabel}
-        </div>
-      )}
     </div>
   )
 }
